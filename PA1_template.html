@@ -203,14 +203,16 @@ hr {
 <body>
 <h2>Loading and preprocessing the data</h2>
 
-<p>We first download the daily activity data and read it into a dataframe.</p>
+<p>We first download the daily activity data and read it into a dataframe.  We then change the date variable to Date class. I am using package dplyr.</p>
 
 <pre><code class="r">library(dplyr)
 
 # download and read the file
-#url &lt;- &quot;https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip&quot;
-#download.file(url, &quot;activity.zip&quot;)
-#unzip(&quot;activity.zip&quot;)
+if (!file.exists(&quot;activity.csv&quot;)) {
+        url &lt;- &quot;https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip&quot;
+        download.file(url, &quot;activity.zip&quot;)
+        unzip(&quot;activity.zip&quot;)
+}
 data &lt;- tbl_df(read.csv(&quot;activity.csv&quot;,header=T))
 data &lt;- data  %&gt;% mutate(date = as.Date(date))
 </code></pre>
@@ -238,7 +240,7 @@ data &lt;- data  %&gt;% mutate(date = as.Date(date))
 
 <h2>What is mean total number of steps taken per day?</h2>
 
-<p>The Daily Activity Histogram is plotted as below:</p>
+<p>The Daily Activity Histogram is plotted as below.  The missing values have been removed for this purpose.</p>
 
 <pre><code class="r">daywisedata &lt;- data %&gt;% filter(!is.na(steps)) %&gt;% group_by(date) %&gt;% summarize(stepsperday = sum(steps))
 with(daywisedata, hist(stepsperday, col=&quot;red&quot;, xlab = &quot;Total Steps&quot;, ylab = &quot;Number Of Days&quot;, main = &quot;Daily Activity Histogram&quot;))
@@ -324,12 +326,12 @@ with(imputed.daywisedata, hist(stepsperday, col=&quot;red&quot;, xlab = &quot;To
 
 <ul>
 <li>We see that the mean and median have changed slightly but not significantly</li>
-<li>The histogram shows that the number of days where the activity(total steps) are higher have gone up from ~28 to ~36.  The rest of the histogram looks the same.  The pattern of the histogram also remains the same i.e. the number of days are highest for the range 10000-15000 for total steps per day .</li>
+<li>The histogram shows that the number of days where the activity(total steps) are higher have gone up from ~28 to ~36.  The rest of the histogram looks the same.  The pattern of the histogram also remains the same i.e. the number of days are highest for the range 10000-15000 for total steps per day.</li>
 </ul>
 
 <h2>Are there differences in activity patterns between weekdays and weekends?</h2>
 
-<p>We now want to see the difference in activty patterns between the weekends and weekdays.  For that, we now add the weekday/weekend indicating factor to our data as below:</p>
+<p>We now want to see the difference in activity patterns between the weekends and weekdays.  For that, we now add the weekday/weekend indicating factor to our data as below:</p>
 
 <pre><code class="r">newdata &lt;- data %&gt;% mutate(weekday = weekdays(date))
 weekend &lt;- c(&quot;Saturday&quot;,&quot;Sunday&quot;)

@@ -7,15 +7,17 @@ output:
 
 
 ## Loading and preprocessing the data
-We first download the daily activity data and read it into a dataframe.
+We first download the daily activity data and read it into a dataframe.  We then change the date variable to Date class. I am using package dplyr.
 
 ```r
 library(dplyr)
 
 # download and read the file
-#url <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
-#download.file(url, "activity.zip")
-#unzip("activity.zip")
+if (!file.exists("activity.csv")) {
+        url <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
+        download.file(url, "activity.zip")
+        unzip("activity.zip")
+}
 data <- tbl_df(read.csv("activity.csv",header=T))
 data <- data  %>% mutate(date = as.Date(date))
 ```
@@ -45,7 +47,7 @@ data
 ```
 
 ## What is mean total number of steps taken per day?
-The Daily Activity Histogram is plotted as below:
+The Daily Activity Histogram is plotted as below.  The missing values have been removed for this purpose.
 
 ```r
 daywisedata <- data %>% filter(!is.na(steps)) %>% group_by(date) %>% summarize(stepsperday = sum(steps))
@@ -146,11 +148,11 @@ median(imputed.daywisedata$steps)
 ```
   
 - We see that the mean and median have changed slightly but not significantly
-- The histogram shows that the number of days where the activity(total steps) are higher have gone up from ~28 to ~36.  The rest of the histogram looks the same.  The pattern of the histogram also remains the same i.e. the number of days are highest for the range 10000-15000 for total steps per day .
+- The histogram shows that the number of days where the activity(total steps) are higher have gone up from ~28 to ~36.  The rest of the histogram looks the same.  The pattern of the histogram also remains the same i.e. the number of days are highest for the range 10000-15000 for total steps per day.
 
 ## Are there differences in activity patterns between weekdays and weekends?
   
-We now want to see the difference in activty patterns between the weekends and weekdays.  For that, we now add the weekday/weekend indicating factor to our data as below:
+We now want to see the difference in activity patterns between the weekends and weekdays.  For that, we now add the weekday/weekend indicating factor to our data as below:
 
 ```r
 newdata <- data %>% mutate(weekday = weekdays(date))
