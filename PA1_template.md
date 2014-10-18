@@ -69,7 +69,7 @@ with(daywisedata, {
 
 ![plot of chunk histogram](figure/histogram.png) 
   
-It can be seen from the above histogram that the number of days where the activity is between 10000-15000 steps dominates.  Around 65-70% of the days the activity is more than 10000 steps.
+It can be seen from the above histograms that the number of days where the activity is between 10000-15000 steps is the highest.  Around 65-70% of the days the activity is more than 10000 steps.
 
 The mean and median total number of steps per day are as below:
 
@@ -102,7 +102,7 @@ xyplot(average_steps ~ interval, data = timeseriesdata, type="l", xlab = "Time O
 
 ![plot of chunk avgdailydata](figure/avgdailydata.png) 
   
-The maximum number of average steps and the time of day at which the peak is seen is calculated below.  We can see the same in the plot above as well.  The 5-minute interval at 835 hours (or 8:35 AM) shows the maximum average daily activity of ~206 steps.
+The maximum number of average steps and the time of day at which the peak is observed is calculated below.  We can see the same in the plot above as well.  The 5-minute interval at 835 hours (or 8:35 AM) shows the maximum average daily activity of ~206 steps.
 
 ```r
 max(timeseriesdata$average_steps)
@@ -178,7 +178,7 @@ median(imputed.daywisedata$steps)
 ```
   
 - We see that the mean and median have changed slightly but not significantly
-- The histogram shows that the number of days where the activity(total steps) are higher have gone up from ~28 to ~36.  The rest of the histogram looks the same.  The pattern of the histogram also remains the same i.e. the number of days are highest for the range 10000-15000 for total steps per day.
+- The Frequency histogram shows that the number of days where the activity (total steps) is highest have gone up from ~28 to ~36.  The rest of that histogram looks the same.  The pattern of the histogram also remains the same.  The 'Steps Per Day' histogram shows that we now have less valleys than in the earlier plot.
 
 ## Are there differences in activity patterns between weekdays and weekends?
   
