@@ -243,12 +243,9 @@ data &lt;- data  %&gt;% mutate(date = as.Date(date))
 
 <h2>What is mean total number of steps taken per day?</h2>
 
-<p>The Daily Activity Histogram is plotted as below.  The missing values have been removed for this purpose.  Then the sum of the steps is taken for each date and using that data the histogram is plotted.  I have created 2 plots:</p>
-
-<ul>
-<li>Steps Per Day as histogram</li>
-<li>Daily Activity Frequency as Histogram</li>
-</ul>
+<p>The Daily Activity Histogram is plotted as below.  The missing values have been removed for this purpose.  Then the sum of the steps is taken for each date and using that data the histogram is plotted.  I have created 2 plots:
+1. Steps Per Day as histogram
+2. Daily Activity Frequency as Histogram</p>
 
 <pre><code class="r"># summarize data by date to calculate the sum of steps per day
 daywisedata &lt;- data %&gt;% filter(!is.na(steps)) %&gt;% group_by(date) %&gt;% summarize(stepsperday = sum(steps))
@@ -320,9 +317,10 @@ xyplot(average_steps ~ interval, data = timeseriesdata, type=&quot;l&quot;, xlab
 <ul>
 <li>Remove thte missing values.</li>
 <li>calculate the mean per interval.</li>
-<li>Impute the rounded means.
-This interval-wise mean has been calculated above in the data frame &#39;timeseriesdata&#39; and will be used to impute the missing values.  The 288 values in the data frame will be repeated 8 times to impute the 2304 missing values.</li>
+<li>Impute the rounded means.</li>
 </ul>
+
+<p>This interval-wise mean has been calculated above in the data frame &#39;timeseriesdata&#39; and will be used to impute the missing values.  The 288 values in the data frame will be repeated 8 times to impute the 2304 missing values.</p>
 
 <pre><code class="r">imputed.data &lt;- data
 imputed.data$steps[!complete.cases(data)] &lt;- round(timeseriesdata$average_steps)
