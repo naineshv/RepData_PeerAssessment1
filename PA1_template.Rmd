@@ -7,74 +7,84 @@ output:
 
 
 ## Loading and preprocessing the data
-We first download the daily activity data and read it into a dataframe.  We then change the date variable to Date class. I am using package dplyr.
-```{r loaddata, echo=TRUE,cache=TRUE, results='markup'}
-library(dplyr)
-
-# download and read the file
+The dataset for the daily activity is available in [here](https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip).  We first download the daily activity data and read it into a dataframe.  We then transform/mutate the date variable to Date class. 
+```{r loaddata, echo=TRUE, results='markup'}
+# download the file if required
 if (!file.exists("activity.csv")) {
-        url <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
-        download.file(url, "activity.zip")
+        if (!file.exists("activity.zip")) {
+                url <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
+                download.file(url, "activity.zip")
+        }
         unzip("activity.zip")
 }
+
+# read data and change date variable to Date class
+library(dplyr)
 data <- tbl_df(read.csv("activity.csv",header=T))
 data <- data  %>% mutate(date = as.Date(date))
 ```
-
   
-Here is the sample of the dataset:
+Here is the sample from the downloaded dataset:
 ```{r}
 data
 ```
 
 ## What is mean total number of steps taken per day?
-The Daily Activity Histogram is plotted as below.  The missing values have been removed for this purpose.
-```{r histogram, echo=TRUE,cache=TRUE}
+The Daily Activity Histogram is plotted as below.  The missing values have been removed for this purpose.  Then the sum of the steps is taken for each date and using that data the histogram is plotted.
+```{r histogram, echo=TRUE}
+# summarize data by date to calculate the sum of steps per day
 daywisedata <- data %>% filter(!is.na(steps)) %>% group_by(date) %>% summarize(stepsperday = sum(steps))
+# plot the histogram of steps per day
 with(daywisedata, hist(stepsperday, col="red", xlab = "Total Steps", ylab = "Number Of Days", main = "Daily Activity Histogram"))
 
 ```
   
+It can be seen from the above histogram that the number of days where the activity is between 10000-15000 steps dominates.  Around 65-70% of the days the activity is more than 10000 steps.
+
 The mean and median total number of steps per day are as below:
-```{r mean_median, echo=TRUE,cache=TRUE}
+```{r mean_median, echo=TRUE}
 mean(daywisedata$steps)
 median(daywisedata$steps)
 ```
 
 ## What is the average daily activity pattern?
 Here is the Time Series plot showing the Average Daily Activity pattern:
-```{r avgdailydata, echo=TRUE,cache=TRUE}
-timewisedata <- data %>% filter(!is.na(steps)) %>% group_by(interval) %>% summarize(average_steps = mean(steps))
-with(timewisedata, plot(x = interval, y = average_steps, type="l", lwd=3, xlab = "Time Of Day (HHMM)", ylab = "Average Steps", main = "Average Daily Activity"))
-
+```{r avgdailydata, echo=TRUE}
+# summarize data by interval to calculate the verage number of steps per day
+timeseriesdata <- data %>% filter(!is.na(steps)) %>% group_by(interval) %>% summarize(average_steps = mean(steps))
+# plot the time series data
+library(lattice)
+xyplot(average_steps ~ interval, data = timeseriesdata, type="l", xlab = "Time Of Day (HHMM)", ylab = "Average Steps", main = "Average Daily Activity")
 ```
   
-The maximum number of average steps and the time of day at which the peak is seen is calculated below.  We can see that the 5-minute interval at 835 hours (or 8:35 AM) shows the maximum average daily activity.
-```{r peak, echo=TRUE,cache=TRUE}
-max(timewisedata$average_steps)
-timewisedata$interval[which(timewisedata$average_steps == max(timewisedata$average_steps))]
+The maximum number of average steps and the time of day at which the peak is seen is calculated below.  We can see from the plot that the 5-minute interval at 835 hours (or 8:35 AM) shows the maximum average daily activity.
+```{r peak, echo=TRUE}
+max(timeseriesdata$average_steps)
+timeseriesdata$interval[which(timeseriesdata$average_steps == max(timeseriesdata$average_steps))]
 ```
 
 ## Imputing missing values
 The total number of missing values in the data set is as below:
-```{r missingvalues, echo=TRUE,cache=TRUE}
+```{r missingvalues, echo=TRUE}
 length(data$steps[!complete.cases(data)])
 ```
   
-I am using the mean for that interval to impute values.  The interval-wise mean calculated above(timewisedata) will be used to impute the missing values.  The 288 values in the data frame will be repeated 8 times to impute the 2304 values.
-```{r imputevalues, echo=TRUE,cache=TRUE}
+I am using the mean for that interval to impute values.  The interval-wise mean calculated above(timeseriesdata) will be used to impute the missing values.  The 288 values in the data frame will be repeated 8 times to impute the 2304 values.
+```{r imputevalues, echo=TRUE}
 imputed.data <- data
-imputed.data$steps[!complete.cases(data)] <- round(timewisedata$average_steps)
+imputed.data$steps[!complete.cases(data)] <- round(timeseriesdata$average_steps)
 ```
   
 We then recaclculate the daywise sum of steps and re-plot it as below:
-```{r imputedvaluesplot, echo=TRUE,cache=TRUE}
+```{r imputedvaluesplot, echo=TRUE}
+# summarize data by date to calculate the sum of steps per day
 imputed.daywisedata <- imputed.data %>% group_by(date) %>% summarize(stepsperday = sum(steps))
+# plot the histogram of steps per day
 with(imputed.daywisedata, hist(stepsperday, col="red", xlab = "Total Steps", ylab = "Number Of Days", main = "Daily Activity Histogram with Imputed Data"))
 ```
 
 The new mean and median are as below:
-```{r imputedvaluesmean, echo=TRUE,cache=TRUE}
+```{r imputedvaluesmean, echo=TRUE}
 mean(imputed.daywisedata$steps)
 median(imputed.daywisedata$steps)
 ```
@@ -84,19 +94,20 @@ median(imputed.daywisedata$steps)
 
 ## Are there differences in activity patterns between weekdays and weekends?
   
-We now want to see the difference in activity patterns between the weekends and weekdays.  For that, we now add the weekday/weekend indicating factor to our data as below:
-```{r addweekend, echo=TRUE,cache=TRUE}
-newdata <- data %>% mutate(weekday = weekdays(date))
+We now want to see the difference in activity patterns between the weekends and weekdays.  For that, we now add the weekday/weekend indicating factor 'daytype' to our data as below.  The new time series data showing the average steps per interval across days can be seen has been displayed.
+```{r addweekend, echo=TRUE}
+# add variables day (monday, tues...), daytype (weekday/weekend - factor)
 weekend <- c("Saturday","Sunday")
-newdata <- imputed.data %>% mutate(day = weekdays(date), weekday = !(day %in% weekend)) %>% mutate(weekday = factor(weekday, labels = c("weekend", "weekday")))
-newtimewisedata <- newdata %>% filter(!is.na(steps)) %>% group_by(weekday, interval) %>% summarize(average_steps = mean(steps))
-newtimewisedata
+newdata <- data %>% mutate(day = weekdays(date), daytype = !(day %in% weekend)) %>% mutate(daytype = factor(daytype, labels = c("weekend", "weekday")))
+# calculate the new time series data by daytype
+newtimeseriesdata <- newdata %>% filter(!is.na(steps)) %>% group_by(daytype, interval) %>% summarize(average_steps = mean(steps))
+newtimeseriesdata
 ```
   
 The Activity patterns for weekdays and weekends have been calculated and plotted as below:
-```{r panelplot, echo=TRUE,cache=TRUE}
-library(lattice)
-xyplot(average_steps ~ interval | weekday, data = newtimewisedata, layout = c(1,2), type="l", main = "Average Daily Activity Pattern", xlab = "Interval", ylab = "Number of Steps",
+```{r panelplot, echo=TRUE}
+# plot the panels
+xyplot(average_steps ~ interval | daytype, data = newtimeseriesdata, layout = c(1,2), type="l", main = "Average Daily Activity", xlab = "Interval", ylab = "Number of Steps",
         panel = function(x,y,...) {
 		panel.xyplot(x,y,...)
 		panel.abline(h = median(y), lty = 2)
@@ -105,8 +116,8 @@ xyplot(average_steps ~ interval | weekday, data = newtimewisedata, layout = c(1,
 
 ```
   
-- We can see from the plots that there is more activity during the day on the weekends and it is also more distributed.
-- The peak is higher on weekday (~200+ against ~160 for weekend) at 835 hours (8:35 AM) indicating some morning activity like travel to office.
+- We can see from the plots that there is more activity during day time on weekends.  This is shown by higher number of points above 50 between 1000 and 2000 hours (or 10:00AM and 8:00PM) for weekends.
+- As shown by the red line, on weekend days, the activity trend is increasing as the day progresses, whereas the increase is less prominent during weekdays.  
+- The peak is higher on weekdays (~200+ against ~160 for weekend) at 835 hours (8:35 AM) indicating some morning activity like travel to office.
 - The median is slightly higher for the weekends as indicated by the dotted line.
-- As shown by the red line, the activity increases as the day progresses on weekends, whereas the increase is less prominent during weekdays.  
 
