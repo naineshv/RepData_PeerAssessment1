@@ -30,13 +30,17 @@ data
 ```
 
 ## What is mean total number of steps taken per day?
-The Daily Activity Histogram is plotted as below.  The missing values have been removed for this purpose.  Then the sum of the steps is taken for each date and using that data the histogram is plotted.
+  
+The Daily Activity Histogram is plotted as below.  The missing values have been removed for this purpose.  Then the sum of the steps is taken for each date and using that data the histogram is plotted.  I have created 2 plots:  
+- Steps Per Day as histogram  
+- Daily Activity Frequency as Histogram
 ```{r histogram, echo=TRUE}
 # summarize data by date to calculate the sum of steps per day
 daywisedata <- data %>% filter(!is.na(steps)) %>% group_by(date) %>% summarize(stepsperday = sum(steps))
-# plot the histogram of steps per day
-with(daywisedata, hist(stepsperday, col="red", xlab = "Total Steps", ylab = "Number Of Days", main = "Daily Activity Histogram"))
-
+# plot the histograms
+par(mfrow=c(1,2), mar = c(5,4,4,0.5))
+with(daywisedata, plot(x=date, y=stepsperday, type="h", lwd = 2, col="red", ylab = "Steps", xlab = "Date", main = "Steps Per Day"))
+with(daywisedata, hist(stepsperday, col="red", xlab = "Total Steps", ylab = "Number Of Days", main = "Daily Activity Frequency"))
 ```
   
 It can be seen from the above histogram that the number of days where the activity is between 10000-15000 steps dominates.  Around 65-70% of the days the activity is more than 10000 steps.
@@ -75,12 +79,14 @@ imputed.data <- data
 imputed.data$steps[!complete.cases(data)] <- round(timeseriesdata$average_steps)
 ```
   
-We then recaclculate the daywise sum of steps and re-plot it as below:
+We then recaclculate the daywise sum of steps and re-plot the histograms as below:
 ```{r imputedvaluesplot, echo=TRUE}
 # summarize data by date to calculate the sum of steps per day
 imputed.daywisedata <- imputed.data %>% group_by(date) %>% summarize(stepsperday = sum(steps))
-# plot the histogram of steps per day
-with(imputed.daywisedata, hist(stepsperday, col="red", xlab = "Total Steps", ylab = "Number Of Days", main = "Daily Activity Histogram with Imputed Data"))
+# plot the histograms
+par(mfrow=c(1,2), mar = c(5,4,4,0.5))
+with(imputed.daywisedata, plot(x=date, y=stepsperday, type="h", lwd = 2, col="red", ylab = "Steps", xlab = "Date", main = "Steps Per Day"), title = "Daily Activity")
+with(imputed.daywisedata, hist(stepsperday, col="red", xlab = "Total Steps", ylab = "Number Of Days", main = "Daily Activity Frequency"))
 ```
 
 The new mean and median are as below:
