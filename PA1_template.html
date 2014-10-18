@@ -316,19 +316,21 @@ xyplot(average_steps ~ interval, data = timeseriesdata, type=&quot;l&quot;, xlab
 </code></pre>
 
 <p>###Strategy
-I am using the mean for each interval calulated after removal of missing values to impute data.  The steps are as follows:</p>
+Visual inspection of the data shows that the data is missing for entire day (i.e. all intervals) if certain days.  Hence the mean from the other days can be used to impute the missing values.  This is the chosed strategy and the steps for imputing are as follows:</p>
 
 <ul>
-<li>Remove the missing values.</li>
+<li>Remove the missing values from the original data.</li>
 <li>Calculate the mean per interval.</li>
-<li>Impute the rounded means.</li>
+<li>Impute the rounded means into the missing values of original data to form imputed data.</li>
 </ul>
 
-<p>This interval-wise mean has been calculated above in the data frame &#39;timeseriesdata&#39; and will be used to impute the missing values.  The 288 values in the data frame will be repeated 8 times to impute the 2304 missing values.</p>
+<p>This interval-wise mean is already calculated above in the data frame &#39;timeseriesdata&#39; and will be used to impute the missing values.  The 288 values in the data frame will be repeated 8 times to impute the 2304 missing values.</p>
 
 <pre><code class="r">imputed.data &lt;- data
 imputed.data$steps[!complete.cases(data)] &lt;- round(timeseriesdata$average_steps)
 </code></pre>
+
+<p>Number of Missing values after imputing: 0</p>
 
 <p>We then recaclculate the daywise sum of steps and re-plot the histograms as below:</p>
 

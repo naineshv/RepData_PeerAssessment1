@@ -132,17 +132,18 @@ length(data$steps[!complete.cases(data)])
 ```
   
 ###Strategy
-I am using the mean for each interval calulated after removal of missing values to impute data.  The steps are as follows:
-- Remove the missing values.
+Visual inspection of the data shows that the data is missing for entire day (i.e. all intervals) if certain days.  Hence the mean from the other days can be used to impute the missing values.  This is the chosed strategy and the steps for imputing are as follows:
+- Remove the missing values from the original data.
 - Calculate the mean per interval.
-- Impute the rounded means.
+- Impute the rounded means into the missing values of original data to form imputed data.
 
-This interval-wise mean has been calculated above in the data frame 'timeseriesdata' and will be used to impute the missing values.  The 288 values in the data frame will be repeated 8 times to impute the 2304 missing values.
+This interval-wise mean is already calculated above in the data frame 'timeseriesdata' and will be used to impute the missing values.  The 288 values in the data frame will be repeated 8 times to impute the 2304 missing values.
 
 ```r
 imputed.data <- data
 imputed.data$steps[!complete.cases(data)] <- round(timeseriesdata$average_steps)
 ```
+Number of Missing values after imputing: 0
   
 We then recaclculate the daywise sum of steps and re-plot the histograms as below:
 
