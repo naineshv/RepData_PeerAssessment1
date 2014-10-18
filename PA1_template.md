@@ -100,7 +100,7 @@ xyplot(average_steps ~ interval, data = timeseriesdata, type="l", xlab = "Time O
 
 ![plot of chunk avgdailydata](figure/avgdailydata.png) 
   
-The maximum number of average steps and the time of day at which the peak is seen is calculated below.  We can see from the plot that the 5-minute interval at 835 hours (or 8:35 AM) shows the maximum average daily activity.
+The maximum number of average steps and the time of day at which the peak is seen is calculated below.  We can see the same in the plot above as well.  The 5-minute interval at 835 hours (or 8:35 AM) shows the maximum average daily activity of ~206 steps.
 
 ```r
 max(timeseriesdata$average_steps)
@@ -129,7 +129,11 @@ length(data$steps[!complete.cases(data)])
 ## [1] 2304
 ```
   
-I am using the mean for that interval to impute values.  The interval-wise mean calculated above(timeseriesdata) will be used to impute the missing values.  The 288 values in the data frame will be repeated 8 times to impute the 2304 values.
+I am using the mean for each interval calulated after removal of missing values to impute data.  The steps are as follows:  
+- Remove thte missing values.  
+- calculate the mean per interval.  
+- Impute the rounded means.  
+This interval-wise mean has been calculated above in the data frame 'timeseriesdata' and will be used to impute the missing values.  The 288 values in the data frame will be repeated 8 times to impute the 2304 missing values.
 
 ```r
 imputed.data <- data
