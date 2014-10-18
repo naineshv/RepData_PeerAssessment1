@@ -59,8 +59,10 @@ The Daily Activity Histogram is plotted as below.  The missing values have been 
 daywisedata <- data %>% filter(!is.na(steps)) %>% group_by(date) %>% summarize(stepsperday = sum(steps))
 # plot the histograms
 par(mfrow=c(1,2), mar = c(5,4,4,0.5))
-with(daywisedata, plot(x=date, y=stepsperday, type="h", lwd = 2, col="red", ylab = "Steps", xlab = "Date", main = "Steps Per Day"))
-with(daywisedata, hist(stepsperday, col="red", xlab = "Total Steps", ylab = "Number Of Days", main = "Daily Activity Frequency"))
+with(daywisedata, {
+        plot(x=date, y=stepsperday, type="h", lwd = 2, col="red", ylab = "Steps", xlab = "Date", main = "Steps Per Day")
+        hist(stepsperday, col="red", xlab = "Total Steps", ylab = "Number Of Days", main = "Daily Activity Frequency")
+})
 ```
 
 ![plot of chunk histogram](figure/histogram.png) 
@@ -141,8 +143,10 @@ We then recaclculate the daywise sum of steps and re-plot the histograms as belo
 imputed.daywisedata <- imputed.data %>% group_by(date) %>% summarize(stepsperday = sum(steps))
 # plot the histograms
 par(mfrow=c(1,2), mar = c(5,4,4,0.5))
-with(imputed.daywisedata, plot(x=date, y=stepsperday, type="h", lwd = 2, col="red", ylab = "Steps", xlab = "Date", main = "Steps Per Day"), title = "Daily Activity")
-with(imputed.daywisedata, hist(stepsperday, col="red", xlab = "Total Steps", ylab = "Number Of Days", main = "Daily Activity Frequency"))
+with(imputed.daywisedata, {
+        plot(x=date, y=stepsperday, type="h", lwd = 2, col="red", ylab = "Steps", xlab = "Date", main = "Steps Per Day")
+        hist(stepsperday, col="red", xlab = "Total Steps", ylab = "Number Of Days", main = "Daily Activity Frequency")
+})
 ```
 
 ![plot of chunk imputedvaluesplot](figure/imputedvaluesplot.png) 
