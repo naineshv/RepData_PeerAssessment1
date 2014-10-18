@@ -107,8 +107,9 @@ mean(imputed.daywisedata$steps)
 median(imputed.daywisedata$steps)
 ```
   
-- We see that the mean and median have changed slightly but not significantly
-- The Frequency histogram shows that the number of days where the activity (total steps) is highest have gone up from ~28 to ~36.  The rest of that histogram looks the same.  The pattern of the histogram also remains the same.  The 'Steps Per Day' histogram shows that we now have less valleys than in the earlier plot.
+- We see that the mean and median have changed slightly but not significantly.
+- The Frequency histogram shows that the number of days where the activity (total steps) is highest have gone up from ~28 to ~36.  The rest of that histogram looks the same.  The pattern of the histogram also remains the same.
+- The 'Steps Per Day' histogram shows that we now have less valleys than in the earlier plot.
 
 ## Are there differences in activity patterns between weekdays and weekends?
   
