@@ -50,9 +50,10 @@ data
 
 ## What is mean total number of steps taken per day?
   
-The Daily Activity Histogram is plotted as below.  The missing values have been removed for this purpose.  Then the sum of the steps is taken for each date and using that data the histogram is plotted.  I have created 2 plots:
-1. Steps Per Day as histogram
-2. Daily Activity Frequency as Histogram
+The Daily Activity Histogram is plotted as below.  The missing values have been removed for this purpose.  Then the sum of the steps is taken for each date and using that data the histogram is plotted.  I have created 2 histograms:
+
+1. Steps Per Day
+2. Daily Activity Frequency
 
 
 ```r
@@ -130,9 +131,10 @@ length(data$steps[!complete.cases(data)])
 ## [1] 2304
 ```
   
+###Strategy
 I am using the mean for each interval calulated after removal of missing values to impute data.  The steps are as follows:
-- Remove thte missing values.
-- calculate the mean per interval.
+- Remove the missing values.
+- Calculate the mean per interval.
 - Impute the rounded means.
 
 This interval-wise mean has been calculated above in the data frame 'timeseriesdata' and will be used to impute the missing values.  The 288 values in the data frame will be repeated 8 times to impute the 2304 missing values.
